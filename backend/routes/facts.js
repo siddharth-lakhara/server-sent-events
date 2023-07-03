@@ -2,8 +2,7 @@ const Router = require('express').Router;
 const { v4: uuidv4 } = require('uuid');
 const router = Router();
 
-const clients = [];
-const facts = [];
+let clients = [];
 
 router.get('/facts', (req, res) => {
   const headers = {
@@ -13,32 +12,29 @@ router.get('/facts', (req, res) => {
   };
 
   res.writeHead(200, headers);
-  res.write(`data: ${JSON.stringify(facts)}\n`);
-  // res.send();  
-  // res.write(`
-  // event: connect,
-  // data: 'OK'
-  // `)
+  res.write(
+`event: connect
+data: 'connection OK'\n\n`);
   const client = {
     id: uuidv4(),
-    res
-  }
+    res,
+  };
   clients.push(client);
   console.log('[Connect]: ', client.id);
 
   res.on('close', () => {
     console.log('[Disconnect]: ', client.id);
-    clients.filter((c) => c.id !== client.id);
-  })
-  
+    clients = clients.filter((c) => c.id !== client.id);
+  });
 });
 
 const broadcastFact = (fact) => {
   clients.forEach((client) => {
     console.log('[Broadcast]: ', client.id);
-    client.res.write(`data: ${JSON.stringify(fact)}\n`);
+    client.res.write(`event: message
+data: ${JSON.stringify(fact)}\n\n`);
   });
-}
+};
 
 router.post('/facts', (req, res) => {
   const fact = req.body;
