@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "backend": "node backend/index.js"
+    "backend": "node backend/index.js",
+    "frontend": "http-server ./frontend -c-1 -p 8081"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +14,7 @@
   "dependencies": {
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
+    "http-server": "^14.1.1",
     "uuid": "^9.0.0"
   }
 }
