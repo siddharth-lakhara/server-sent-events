@@ -13,7 +13,7 @@ router.get('/facts', (req, res) => {
   };
 
   res.writeHead(200, headers);
-  res.write(`data: ${JSON.stringify(facts)}`);
+  res.write(`data: ${JSON.stringify(facts)}\n`);
   // res.send();  
   // res.write(`
   // event: connect,
@@ -33,11 +33,21 @@ router.get('/facts', (req, res) => {
   
 });
 
-router.get('/stats', (_, res) => {
-  res.send('pong');
+const broadcastFact = (fact) => {
+  clients.forEach((client) => {
+    console.log('[Broadcast]: ', client.id);
+    client.res.write(`data: ${JSON.stringify(fact)}\n`);
+  });
+}
+
+router.post('/facts', (req, res) => {
+  const fact = req.body;
+  console.log('[New Fact]: ', fact);
+  res.send('OK');
+  return broadcastFact(fact);
 });
 
-router.post('/facts', (_, res) => {
+router.get('/stats', (_, res) => {
   res.send('pong');
 });
 
